@@ -1,5 +1,8 @@
+mod car;
+mod traffic_light;
+use traffic_light::TrafficLight;
 use macroquad::prelude::*;
-
+use car::{Depart, Direction, Car};
 
 fn window_conf() -> Conf {
     Conf {
@@ -12,36 +15,6 @@ fn window_conf() -> Conf {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Depart {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Direction {
-    North,
-    South,
-    East,
-    West,
-}
-
-#[derive(Debug)]
-struct Car {
-    color: Texture2D,
-    x: f32,
-    y: f32,
-    depart: Depart,
-    direction: Direction,
-}
-
-struct Lights {
-    x: f32,
-    y: f32,
-    is_on: bool,
-}
 
 #[macroquad::main(window_conf)]
 async fn main() {
@@ -53,22 +26,22 @@ async fn main() {
     let random_car = [Depart::Up, Depart::Down, Depart::Right, Depart::Left];
     let mut cars = Vec::new();
     let lights = vec![
-        Lights {
+        TrafficLight {
             x: 285.0,
             y: 275.0,
             is_on: false,
         },
-        Lights {
+        TrafficLight {
             x: 405.0,
             y: 275.0,
             is_on: false,
         },
-        Lights {
+        TrafficLight {
             x: 285.0,
             y: 405.0,
             is_on: true,
         },
-        Lights {
+        TrafficLight {
             x: 405.0,
             y: 405.0,
             is_on: false,
@@ -189,62 +162,8 @@ async fn main() {
         }
 
         for car in &mut cars {
-            let rotation = match car.depart {
-                Depart::Down => 0.0_f32,
-                Depart::Up  => 180.0_f32,
-                Depart::Right => 270.0_f32,
-                Depart::Left  => 90.0_f32,
-            }.to_radians();
-
-            draw_texture_ex( &car.color,
-                            car.x,
-                            car.y,
-                            WHITE,
-                            DrawTextureParams {
-                                rotation,
-                                ..Default::default()
-                            },
-                        );
-            match car.depart {
-                Depart::Up => {
-                    car.y += 1.0;
-                }
-                Depart::Down => {
-                    car.y -= 1.0;
-                }
-                Depart::Left => {
-                    car.x += 1.0;
-                }
-                Depart::Right => {
-                    car.x -= 1.0;
-                }
-            }
-
-            match car.direction {
-                Direction::North => {
-                    if car.x == 355.0 {
-                        car.depart = Depart::Down;
-                    }
-                },
-                Direction::South => {
-                    if car.x == 305.0 {
-                        car.depart = Depart::Up;
-                    }
-                },
-                Direction::East => {
-                    if car.y == 305.0 {
-                        car.depart = Depart::Right;
-                    }
-                },
-                Direction::West => {
-                    if car.y == 355.0 {
-                        car.depart = Depart::Left;
-                    }
-                },
-
-            }
-
-            
+            car.draw();
+            car.update();
         }
         cars.retain(|car| {
             car.x > -40.0
