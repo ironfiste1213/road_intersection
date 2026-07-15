@@ -82,3 +82,37 @@ impl Car {
         }
     }
 }
+pub fn checkSafty(car: &Car, cars: &Vec<Car>) -> bool {
+    match car.depart {
+        Depart::Down => {
+            cars.iter().rev().any(|other| {
+                other.depart == Depart::Down
+                    && (700.0 - (other.y + 40.0)) < Car::SAF_DISTANCE
+            })
+        }
+
+        Depart::Up => {
+            cars.iter().rev().any(|other| {
+                other.depart == Depart::Up
+                    && other.y  <=Car::SAF_DISTANCE
+            })
+        }
+
+        Depart::Right => {
+            cars.iter().rev().any(|other| {
+                other.depart == Depart::Right
+                    && (700.0 - (other.x + 40.0)) < Car::SAF_DISTANCE
+            })
+        }
+
+        Depart::Left => {
+
+            println!("ppppppppp");
+
+            cars.iter().rev().any(|other| {
+                other.depart == Depart::Left
+                    && other.x  < Car::SAF_DISTANCE
+            })
+        }
+    }
+}
