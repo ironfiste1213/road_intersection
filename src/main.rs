@@ -1,5 +1,7 @@
 mod car;
 mod traffic_light;
+mod map;
+use map::Map;
 use traffic_light::TrafficLight;
 use macroquad::prelude::*;
 use car::{Depart, Direction, Car};
@@ -53,23 +55,12 @@ async fn main() {
         let car_2 = load_texture("assets/car2.png").await.unwrap();
         let car_3 = load_texture("assets/car3.png").await.unwrap();
         let car_colors = [car_1, car_2, car_3];
-
+    let map = Map;
     loop {
         clear_background(DARKGREEN);
-
         draw_texture(&map_img,0.0,0.0,WHITE);
-        draw_rectangle(0.0, 300.0, 700.0, 100.0, DARKGRAY);
-        draw_rectangle(300.0, 0.0, 100.0, 700.0, DARKGRAY);
-        draw_line(300.0, 0.0, 300.0, 700.0, 2.0, LIGHTGRAY);
-        draw_line(350.0, 0.0, 350.0, 700.0, 2.0, ORANGE);
-        draw_line(400.0, 0.0, 400.0, 700.0, 2.0, LIGHTGRAY);
-        draw_line(0.0, 300.0, 700.0, 300.0, 2.0, LIGHTGRAY);
-        draw_line(0.0, 350.0, 700.0, 350.0, 2.0, ORANGE);
-        draw_line(0.0, 400.0, 700.0, 400.0, 2.0, LIGHTGRAY);
-        draw_rectangle(300.0, 300.0, 100.0, 100.0, DARKGRAY);
-        draw_rectangle(299.0, 301.0, 99.0, 101.0, DARKGRAY);
-        draw_rectangle(301.0, 299.0, 101.0, 99.0, DARKGRAY);
-
+        map.draw();
+       
          if is_key_pressed(KeyCode::Down) {
             let r = macroquad::rand::gen_range(0, 3);
             cars.push(Car {
@@ -173,14 +164,7 @@ async fn main() {
         });
 
         for light in &lights {
-            draw_rectangle(light.x, light.y , 10.0 , 20.0, BLACK);
-            if light.is_on {
-                draw_circle(light.x+5.0, light.y+5.0 , 3.0, GREEN);
-                draw_circle(light.x+5.0, light.y+15.0 , 3.0, DARKGRAY);
-            } else {
-                draw_circle(light.x+5.0, light.y+5.0 , 3.0, DARKGRAY);
-                draw_circle(light.x+5.0, light.y+15.0 , 3.0, RED);
-            }
+            light.draw();
         }
 
  

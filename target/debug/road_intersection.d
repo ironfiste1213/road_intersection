@@ -1,1 +1,1 @@
-/home/melgamous/road_intersection/target/debug/road_intersection: /home/melgamous/road_intersection/src/car.rs /home/melgamous/road_intersection/src/main.rs /home/melgamous/road_intersection/src/traffic_light.rs
+/home/melgamous/road_intersection/target/debug/road_intersection: /home/melgamous/road_intersection/src/car.rs /home/melgamous/road_intersection/src/main.rs /home/melgamous/road_intersection/src/map.rs /home/melgamous/road_intersection/src/traffic_light.rs
