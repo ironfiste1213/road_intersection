@@ -15,11 +15,19 @@ fn window_conf() -> Conf {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Direction {
+enum Depart {
     Up,
     Down,
     Left,
     Right,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Direction {
+    North,
+    South,
+    East,
+    West,
 }
 
 #[derive(Debug)]
