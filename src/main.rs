@@ -8,8 +8,6 @@ fn window_conf() -> Conf {
         window_height: 700,
         window_resizable: false,
         fullscreen: false,
-        sample_count: 1,
-        high_dpi: true,
         ..Default::default()
     }
 }
@@ -53,6 +51,7 @@ async fn main() {
     let depart_down_dir = [Direction::West, Direction::South, Direction::East];
     let depart_left_dir = [Direction::South, Direction::East, Direction::North];
     let depart_right_dir = [Direction::North, Direction::West, Direction::South];
+    let random_car = [Depart::Up, Depart::Down, Depart::Right, Depart::Left];
     let mut cars = Vec::new();
     let lights = vec![
         Lights {
@@ -136,6 +135,53 @@ async fn main() {
             });
         }
 
+        if is_key_pressed(KeyCode::R) {
+            let r = macroquad::rand::gen_range(0, 3);
+            let rand_car = macroquad::rand::gen_range(0, 4);
+
+            println!("{rand_car}");
+
+            let car = match random_car[rand_car] {
+                Depart::Up => Car {
+                    x: 355.0,
+                    y: 700.0,
+                    depart: Depart::Down,
+                    direction: depart_up_dir[r],
+                    color: car_colors[r],
+                },
+            
+                Depart::Down => Car {
+                    x: 305.0,
+                    y: -40.0,
+                    depart: Depart::Up,
+                    direction: depart_down_dir[r],
+                    color: car_colors[r],
+                },
+            
+                Depart::Left => Car {
+                    x: -40.0,
+                    y: 355.0,
+                    depart: Depart::Left,
+                    direction: depart_right_dir[r],
+                    color: car_colors[r],
+                },
+            
+                Depart::Right => Car {
+                    x: 700.0,
+                    y: 305.0,
+                    depart: Depart::Right,
+                    direction: depart_left_dir[r],
+                    color: car_colors[r],
+                },
+            };
+        
+            cars.push(car);
+        }
+
+        if is_key_pressed(KeyCode::Escape) {
+            break;
+        }
+
         for car in &mut cars {
             
             draw_rectangle(car.x, car.y, 40.0, 40.0, car.color);
@@ -198,7 +244,6 @@ async fn main() {
             }
         }
 
-        println!("{:?}",cars);
  
 
 
