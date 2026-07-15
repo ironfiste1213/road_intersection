@@ -30,7 +30,7 @@ enum Direction {
 
 #[derive(Debug)]
 struct Car {
-    color: Color,
+    color: Texture2D,
     x: f32,
     y: f32,
     depart: Depart,
@@ -46,7 +46,6 @@ struct Lights {
 #[macroquad::main(window_conf)]
 async fn main() {
 
-    let car_colors = [BLUE, RED, YELLOW];
     let depart_up_dir = [Direction::East, Direction::North, Direction::West];
     let depart_down_dir = [Direction::West, Direction::South, Direction::East];
     let depart_left_dir = [Direction::South, Direction::East, Direction::North];
@@ -74,11 +73,18 @@ async fn main() {
             y: 405.0,
             is_on: false,
         },
-    ];
+        ];
+        
+        let map_img = load_texture("assets/map.png").await.unwrap();
+        let car_1 = load_texture("assets/car1.png").await.unwrap();
+        let car_2 = load_texture("assets/car2.png").await.unwrap();
+        let car_3 = load_texture("assets/car3.png").await.unwrap();
+        let car_colors = [car_1, car_2, car_3];
 
     loop {
         clear_background(DARKGREEN);
-        
+
+        draw_texture(&map_img,0.0,0.0,WHITE);
         draw_rectangle(0.0, 300.0, 700.0, 100.0, DARKGRAY);
         draw_rectangle(300.0, 0.0, 100.0, 700.0, DARKGRAY);
         draw_line(300.0, 0.0, 300.0, 700.0, 2.0, LIGHTGRAY);
@@ -98,7 +104,7 @@ async fn main() {
                 y: -40.0,
                 depart: Depart::Up,
                 direction: depart_down_dir[r],
-                color: car_colors[r],
+                color: car_colors[r].clone(),
             });
         }
 
@@ -109,7 +115,7 @@ async fn main() {
                 y: 700.0,
                 depart: Depart::Down,
                 direction: depart_up_dir[r],
-                color: car_colors[r],
+                color: car_colors[r].clone(),
             });
         }
 
@@ -120,7 +126,7 @@ async fn main() {
                 y: 355.0,
                 depart: Depart::Left,
                 direction: depart_right_dir[r],
-                color: car_colors[r],
+                color: car_colors[r].clone(),
             });
         }
 
@@ -131,7 +137,7 @@ async fn main() {
                 y: 305.0,
                 depart: Depart::Right,
                 direction: depart_left_dir[r],
-                color: car_colors[r],
+                color: car_colors[r].clone(),
             });
         }
 
@@ -147,7 +153,7 @@ async fn main() {
                     y: 700.0,
                     depart: Depart::Down,
                     direction: depart_up_dir[r],
-                    color: car_colors[r],
+                    color: car_colors[r].clone(),
                 },
             
                 Depart::Down => Car {
@@ -155,7 +161,7 @@ async fn main() {
                     y: -40.0,
                     depart: Depart::Up,
                     direction: depart_down_dir[r],
-                    color: car_colors[r],
+                    color: car_colors[r].clone(),
                 },
             
                 Depart::Left => Car {
@@ -163,7 +169,7 @@ async fn main() {
                     y: 355.0,
                     depart: Depart::Left,
                     direction: depart_right_dir[r],
-                    color: car_colors[r],
+                    color: car_colors[r].clone(),
                 },
             
                 Depart::Right => Car {
@@ -171,7 +177,7 @@ async fn main() {
                     y: 305.0,
                     depart: Depart::Right,
                     direction: depart_left_dir[r],
-                    color: car_colors[r],
+                    color: car_colors[r].clone(),
                 },
             };
         
@@ -183,8 +189,22 @@ async fn main() {
         }
 
         for car in &mut cars {
-            
-            draw_rectangle(car.x, car.y, 40.0, 40.0, car.color);
+            let rotation = match car.depart {
+                Depart::Down => 0.0_f32,
+                Depart::Up  => 180.0_f32,
+                Depart::Right => 270.0_f32,
+                Depart::Left  => 90.0_f32,
+            }.to_radians();
+
+            draw_texture_ex( &car.color,
+                            car.x,
+                            car.y,
+                            WHITE,
+                            DrawTextureParams {
+                                rotation,
+                                ..Default::default()
+                            },
+                        );
             match car.depart {
                 Depart::Up => {
                     car.y += 1.0;
